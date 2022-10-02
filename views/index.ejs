@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+
+    <div class="content">
+        <form id="create" method="POST" action="/">
+            <input type="text" name="ma" placeholder="Ma bai bao" />
+            <input type="text" name="tenBaiBao" placeholder="Ten Bai bao" />
+            <input type="text" name="tenTacGia" placeholder="Ten tac gia" />
+            <input type="text" name="chiSoISBN" placeholder="Chi so ISBN" />
+            <input type="number" name="soTrang" placeholder="So trang" />
+            <input type="number" name="namSX" placeholder="Nam san xuat" />
+
+            <input type="submit" value="Submit" />
+        </form>
+        <br>
+        <form id="delete" method="POST" action="/delete" enctype="multipart/form-data">
+            <input type="submit" value="Xoa">
+            <table>
+                <tr>
+                    <th>STT</th>
+                    <th>Ten bai bao</th>
+                    <th>Ten nhom tac gia</th>
+                    <th>Chi so ISBN</th>
+                    <th>So trang</th>
+                    <th>Nam san xuat</th>
+                    <th>Chon</th>
+                </tr>
+
+                <% for(let i = 0 ; i < sanPhams.length ; i++) {%>
+                    <tr>
+                        <td>
+                            <%=sanPhams[i].ma%>
+                        </td>
+                        <td>
+                            <%=sanPhams[i].tenBaiBao%>
+                        </td>
+                        <td>
+                            <%=sanPhams[i].tenTacGia%>
+                        </td>
+                        <td>
+                            <%=sanPhams[i].chiSoISBN%>
+                        </td>
+                        <td>
+                            <%=sanPhams[i].soTrang%>
+                        </td>
+                        <td>
+                            <%=sanPhams[i].namSX%>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="<%=sanPhams[i].ma%>" />
+                        </td>
+                    </tr>
+                    <% } %>
+            </table>
+        </form>
+
+
+    </div>
+</body>
+
+</html>
