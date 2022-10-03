@@ -3,9 +3,11 @@ const app = express();
 const AWS = require('aws-sdk')
 const bodyParser = require('body-parser')
 
-
+// sử dụng các tệp tĩnh như image, file css, js trong thư mục views
 app.use(express.static('./views'));
+//set the view engine to ejs
 app.set('view engine', 'ejs');
+//mặc định là thư mục views trong thư mục gốc của ứng dụng.
 app.set('views', './views')
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }))
