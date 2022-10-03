@@ -10,8 +10,10 @@ app.set('views', './views')
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }))
 
+//Multer là một middleware cho Express và Nodejs giúp dễ dàng xử lý dữ liệu multipart/form-data khi người dùng upload file.
 const multer = require('multer');
 
+//Cau hinh
 const config = new AWS.Config({
     accessKeyId: 'AKIA2QLH2KVGISBBW373',
     secretAccessKey: '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',
@@ -19,9 +21,12 @@ const config = new AWS.Config({
 });
 AWS.config = config;
 
+//Tạo một ứng dụng khách tài liệu DynamoDB với một tập hợp các tùy chọn cấu hình.
 const docClient = new AWS.DynamoDB.DocumentClient();
 
+// Ten bang
 const tableName = 'BaiBao'
+
 
 const upload = multer();
 
@@ -30,6 +35,7 @@ app.get('/', upload.fields([]), (req, res) => {
         TableName: tableName,
     };
 
+    // Lấy danh sách các item từ table trong DynamoDB, rồi render danh sách đó lên trang index.ejs 
     docClient.scan(params, (err, data) => {
         if (err) {
             res.send('Internal Server Error');
@@ -40,6 +46,7 @@ app.get('/', upload.fields([]), (req, res) => {
 });
 
 app.post('/', upload.fields([]), (req, res) => {
+    //lấy data từ người dùng nhập vào
     const { ma, tenBaiBao, tenTacGia, chiSoISBN, soTrang, namSX } = req.body;
     console.log(req.body)
     const params = {
@@ -54,6 +61,7 @@ app.post('/', upload.fields([]), (req, res) => {
         }
     }
 
+    // Thêm index bên DynamoDB AWS
     docClient.put(params, (err, data) => {
         if (err) {
             return res.send(err);
@@ -66,10 +74,15 @@ app.post('/', upload.fields([]), (req, res) => {
 app.post('/delete', upload.fields([]), (req, res) => {
     const listItems = Object.keys(req.body);
 
+    // nếu danh sách item rỗng thì load lại trang
     if (listItems.length == 0) {
         return res.redirect("/")
     }
 
+    /* Hàm xóa một item
+    Tham số truyền vào: tên table, Id
+    
+    */
     function onDeleteItem(index) {
         const params = {
             TableName: tableName,
@@ -78,6 +91,12 @@ app.post('/delete', upload.fields([]), (req, res) => {
             }
         }
 
+        /*
+        Xóa item bên DynamoDB
+        Nếu bị lỗi in ra màn hình "Internal Server Error"
+        Nếu index > 0 thực thi hàm onDeleteItem(index)
+        Nếu index = 0 trả về trang chủ
+        */
         docClient.delete(params, (err, data) => {
             if (err) {
                 return res.send('Internal Server Error');
@@ -93,7 +112,7 @@ app.post('/delete', upload.fields([]), (req, res) => {
 
     onDeleteItem(listItems.length - 1);
 });
-
+// kết nối với cổng port 3000 
 app.listen(3000, () => {
     console.log('Server is runing on port 3000')
 });
